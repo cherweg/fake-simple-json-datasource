@@ -8,11 +8,11 @@ app.use(bodyParser.json());
 
 var loadTime = new Date().getTime();
 var timeserie = require('./series.json');
-var annotations = require('./annotaions.json');
+var annotations = require('./annotations.json');
 var table = require('./tables.json');
 
 watch('timeserie','./series.json');
-watch('annotations','./annotaions.json');
+watch('annotations','./annotations.json');
 watch('table','./table.json');
 
 function watch(names,file){
