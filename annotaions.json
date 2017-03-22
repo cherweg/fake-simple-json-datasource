@@ -1,0 +1,5 @@
+[
+{ "annotation": {"name":"annotation name","enabled":true,"datasource":"generic datasource","showLine":true}, "title": "Donlad trump is kinda funny", "time": 1450754160000, "text": "teeext", "tags": "a" },
+{ "annotation": {"name":"accnotation name","enabled":true,"datasource":"generic datasource","showLine":true}, "title": "Wow he really won", "time": 1450754160000, "text": "teeext", "tags": "b" },
+{ "annotation": {"name":"annotation name","enabled":true,"datasource":"generic datasource","showLine":true}, "title": "When is the next ", "time": 1450754160000, "text": "teeext", "tags": "c" }
+]

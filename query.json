@@ -1,0 +1,15 @@
+{
+  "panelId": 1,
+  "range": {
+    "from": "2015-10-31T06:33:44.866Z",
+    "to": "2016-10-31T12:33:44.866Z"
+  },
+  "interval": "30s",
+  "intervalMs": 30000,
+  "targets": [
+     { "target": "upper_50", refId: "A" },
+     { "target": "upper_75", refId: "B" }
+  ],
+  "format": "json",
+  "maxDataPoints": 550
+}

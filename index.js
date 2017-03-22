@@ -1,70 +1,40 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('lodash');
+var fs = require('fs');
 var app = express();
 
 app.use(bodyParser.json());
 
-var timeserie = require('./series');
+var loadTime = new Date().getTime();
+var timeserie = require('./series.json');
+var annotations = require('./annotaions.json');
+var table = require('./tables.json');
 
-var now = Date.now();
+watch('timeserie','./series.json');
+watch('annotations','./annotaions.json');
+watch('table','./table.json');
 
-for (var i = timeserie.length -1; i >= 0; i--) {
-  var series = timeserie[i];
-  var decreaser = 0;
-  for (var y = series.datapoints.length -1; y >= 0; y--) {
-    series.datapoints[y][1] = Math.round((now - decreaser) /1000) * 1000;
-    decreaser += 50000;
+function watch(names,file){
+fs.watchFile(file, function(curr, prev) {
+  if (curr.mtime.getTime() > loadTime) {
+    delete require.cache[require.resolve(file)];
+    eval(names  + " = require(file);");
+    //global[names].value = require(file);
+    console.log(names);
+    console.log("Ohh..there was a change");
+  } else {
+    return file
   }
+});
 }
 
-var annotation = {
-  name : "annotation name",
-  enabled: true,
-  datasource: "generic datasource",
-  showLine: true,
-}
-
-var annotations = [
-  { annotation: annotation, "title": "Donlad trump is kinda funny", "time": 1450754160000, text: "teeext", tags: "taaags" },
-  { annotation: annotation, "title": "Wow he really won", "time": 1450754160000, text: "teeext", tags: "taaags" },
-  { annotation: annotation, "title": "When is the next ", "time": 1450754160000, text: "teeext", tags: "taaags" }
-];
-
-var now = Date.now();
-var decreaser = 0;
-for (var i = 0;i < annotations.length; i++) {
-  var anon = annotations[i];
-
-  anon.time = (now - decreaser);
-  decreaser += 1000000
-}
-
-var table =
-  {
-    columns: [{text: 'Time', type: 'time'}, {text: 'Country', type: 'string'}, {text: 'Number', type: 'number'}],
-    values: [
-      [ 1234567, 'SE', 123 ],
-      [ 1234567, 'DE', 231 ],
-      [ 1234567, 'US', 321 ],
-    ]
-  };
-  
 function setCORSHeaders(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST");
   res.setHeader("Access-Control-Allow-Headers", "accept, content-type");  
 }
 
-
-var now = Date.now();
-var decreaser = 0;
-for (var i = 0;i < table.values.length; i++) {
-  var anon = table.values[i];
-
-  anon[0] = (now - decreaser);
-  decreaser += 1000000
-}
 
 app.all('/', function(req, res) {
   setCORSHeaders(res);
@@ -88,12 +58,24 @@ app.all('/annotations', function(req, res) {
   console.log(req.url);
   console.log(req.body);
 
-  res.json(annotations);
+  var tsResult = [];
+  _.each(req.body.annotation.query, function(query) {
+      var k = _.filter(annotations, function(q) {
+        return q.tags === query.tags;
+      });
+
+      _.each(k, function(kk) {
+        tsResult.push(kk)
+      });
+  });
+
+  res.json(tsResult);
   res.end();
 })
 
 app.all('/query', function(req, res){
   setCORSHeaders(res);
+  console.log('got a query');
   console.log(req.url);
   console.log(req.body);
 
